@@ -2,17 +2,37 @@
 
 from chimera.core.chimeraobject import ChimeraObject
 
+from skdrv.skdrv import SKDrv
 
 class CSKFan(ChimeraObject):
-    __config__ = {"param1": "a string parameter"}
+    __config__ = {'sk_host': '127.0.0.1',
+                  'min_speed': 0,
+                  'max_speed': 600,
+                  'acc_rate': 50,
+                  'dec_rate': 100,
+                  'motor_rated_speed': 1800,
+                  'motor_rated_voltage': 230,
+                  'motor_power_factor': 85,
+                  'ramp_mode': 1,
+                  'dynamicVtoF': 1,
+                  'voltage_mode_select': 2,
+                  'low_freq_voltage_boost': 10}
 
     def __init__(self):
         ChimeraObject.__init__(self)
 
-    def __start__(self):
-        self.doSomething("test argument")
+        self.sk = SKDrv()
 
-    def doSomething(self, arg):
-        self.log.warning("Hi, I'm doing something.")
-        self.log.warning("My arg=%s" % arg)
-        self.log.warning("My param1=%s" % self["param1"])
+    def __start__(self):
+
+        self.log.debug('Configuring fan...')
+        for par in self.sk.getConfigPars():
+            try:
+                self.sk[par] = self[par]
+            except Exception, e:
+                self.log.warning("Could not update controller parameter: %s"%(par))
+                self.log.exception(e)
+
+        self.sk.host = self["sk_host"]
+        self.sk.connect()
+
