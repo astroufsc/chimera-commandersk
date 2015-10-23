@@ -3,7 +3,7 @@
 from chimera.core.chimeraobject import ChimeraObject
 
 
-class InstrumentExample(ChimeraObject):
+class CSKFan(ChimeraObject):
     __config__ = {"param1": "a string parameter"}
 
     def __init__(self):
