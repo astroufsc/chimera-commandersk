@@ -1,8 +1,12 @@
 # This is an example of an simple instrument.
 
 from chimera.core.chimeraobject import ChimeraObject
+from chimera.util.enum import Enum
 
 from skdrv.skdrv import SKDrv
+
+FanDirection = Enum("FORWARD", "REVERSE")
+
 
 class CSKFan(ChimeraObject):
     __config__ = {'sk_host': '127.0.0.1',
@@ -21,6 +25,8 @@ class CSKFan(ChimeraObject):
     def __init__(self):
         ChimeraObject.__init__(self)
 
+        self.direction = FanDirection.FORWARD
+
         self.sk = SKDrv()
 
     def __start__(self):
@@ -33,6 +39,44 @@ class CSKFan(ChimeraObject):
                 self.log.warning("Could not update controller parameter: %s"%(par))
                 self.log.exception(e)
 
+        self.log.debug('Connecting to Commander SK @ %s...'%self["sk_host"])
         self.sk.host = self["sk_host"]
         self.sk.connect()
+        self.sk.check_basic()
+        self.sk.setup()
+
+        return True
+
+    def getRotation(self):
+        return self.sk.check_rotation()
+
+    def setRotation(self,freq):
+        """
+        Set the rotation frequency in Hz.
+
+        @param freq: Frequency in Hz
+        @type  freq: float
+        """
+        self.sk.write_parm('01.21',float(freq))
+
+    def getDirection(self):
+        return self.direction
+
+    def setDirection(self,direction):
+        if direction in FanDirection:
+            self.direction = direction
+        else:
+            self.log.warning("Value %s not a valid fan direction. Should be one of %s. Leaving unchanged."%(direction,
+                                                                                    ['%s'%d for d in FanDirection]))
+
+    def startFan(self):
+        if self.direction == FanDirection.FORWARD:
+            return self.sk.forward()
+        elif self.direction == FanDirection.REVERSE:
+            return self.sk.reverse()
+        else:
+            raise IOError("Unrecognized fan direction (%s)."%self.direction)
+
+    def stopFan(self):
+        return self.sk.stop()
 
