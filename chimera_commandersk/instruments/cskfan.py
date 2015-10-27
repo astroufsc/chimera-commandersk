@@ -57,7 +57,7 @@ class CSKFan(ChimeraObject):
         @param freq: Frequency in Hz
         @type  freq: float
         """
-        self.sk.write_parm('01.21',float(freq))
+        self.sk.write_parm('01.21',int(freq))
 
     def getDirection(self):
         return self.direction
