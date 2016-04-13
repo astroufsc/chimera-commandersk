@@ -1,5 +1,5 @@
 chimera_commander plugin
-=======================
+========================
 
 Emerson Control Techniques COMMANDER SK driver for the chimera observatory control system
 https://github.com/astroufsc/chimera.
@@ -35,12 +35,10 @@ Here goes an example of the configuration to be added on ``chimera.config`` file
 
 ::
 
-    instrument:
-        name: Myplc
-        type: Commander
-        clp_host: 127.0.0.1 # Host IP
-    	clp_port: 502 # Host port
-
+    fan:
+      name: DomeFanWest
+      type: CSKFan
+      sk_host: 192.168.30.104
 
 Tested Hardware (for instruments)
 ---------------------------------
@@ -57,4 +55,4 @@ For more information, contact us on chimera's discussion list:
 https://groups.google.com/forum/#!forum/chimera-discuss
 
 Bug reports and patches are welcome and can be sent over our GitHub page:
-https://github.com/astroufsc/chimera-template/
+https://github.com/astroufsc/chimera-commandersk/

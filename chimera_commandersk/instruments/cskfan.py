@@ -86,6 +86,7 @@ class CSKFan(FanBase, FanControllabeSpeed, FanControllabeDirection):
     def switchOff(self):
         return self.sk.stop()
 
-    # TODO: def isFanRunning(self):
-    #
-    # TODO: def status(self):
+    def isSwitchedOn(self):
+        return self.getRotation() > 0
+
+        # TODO: def status(self):
