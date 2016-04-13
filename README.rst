@@ -18,16 +18,9 @@ Installation
 To use chimera-commander, you need first install pymodbus, ( https://pypi.python.org/pypi/pymodbus ),
 a fully featured modbus protocol stack in  python. After that, you can do:
 
-
 ::
 
-   pip install -U chimera_commander
-
-or
-
-::
-
-    pip install -U git+https://github.com/astroufsc/chimera-commander.git
+    pip install -U git+https://github.com/astroufsc/chimera-commandersk.git
 
 
 Configuration Example
