@@ -10,7 +10,7 @@ Usage
 This is a Modbus implementation for COMMANDER SK family of Programmable Logical Controllers (PLC) intended to be used
 for remote controlling these devices using TCP/IP.
 
-.. image:: docs/skyflatexp_example.png
+.. image:: docs/controller.jpg
 
 Installation
 ------------
