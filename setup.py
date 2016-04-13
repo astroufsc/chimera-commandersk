@@ -3,7 +3,8 @@ from distutils.core import setup
 setup(
     name='chimera_commandersk',
     version='0.0.1',
-    packages=['chimera_commandersk', 'chimera_commandersk.instruments', 'chimera_commandersk.controllers'],
+    packages=['chimera_commandersk', 'chimera_commandersk.instruments', 'chimera_commandersk.instruments.skdrv',
+              'chimera_commandersk.controllers'],
     scripts=[],
     url='http://github.com/astroufsc/chimera-commandersk',
     license='GPL v2',

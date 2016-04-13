@@ -42,27 +42,27 @@ class SKDrv(ModbusTcpClient):
     # You have to have Pymodbus module previously installed to this driver work properly.
 
     ip = ''  #change to the corresponding ip number of your network installed commander SK
-    min_speed = ''  #Hz parm1
-    max_speed = ''  #Hz parm2
-    acc_rate = ''  #s/100Hz parm3
-    dec_rate = ''  #s/100 Hz parm4
-    motor_rated_speed = 0  #rpm parm7 -attention: the ctsoft original parm is 1800 rpm
+    min_speed = 0  #Hz parm1
+    max_speed = 600  #Hz parm2
+    acc_rate = 50.  #s/100Hz parm3
+    dec_rate = 100.  #s/100 Hz parm4
+    motor_rated_speed = 1800  #rpm parm7 -attention: the ctsoft original parm is 1800 rpm
     motor_rated_voltage = 230  #V parm 8
-    motor_power_factor = ''  # parm 9 it can be changed for the motor's nameplate value if it is known
+    motor_power_factor = 85  # parm 9 it can be changed for the motor's nameplate value if it is known
     #It is the motor cos() and 0.5<motor_power_factor<0.97.
-    ramp_mode = 2  #  parm 30 Standard Std (2) without dynamic braking resistor, If with this resistor, should set to 0 or
+    ramp_mode = 1  #  parm 30 Standard Std (2) without dynamic braking resistor, If with this resistor, should set to 0 or
     # Fast
-    dynamicVtoF = 'OFF'  # parm 32 - It should not be used when the drive is being used as a soft start to full speed. keep off
+    dynamicVtoF = 1  # parm 32 - It should not be used when the drive is being used as a soft start to full speed. keep off
     voltage_mode_select = 2  #parm 41  fixed boost mode(2)
-    low_freq_voltage_boost = 1  #parm 42  0.5< low_freq_voltage_boost<1
+    low_freq_voltage_boost = 10  #parm 42  0.5< low_freq_voltage_boost<1
 
     order_number = 'SKBD200110'
 
-    __config__ = {'min_speed': 0, 'max_speed': 600, 'acc_rate': 50, 'dec_rate': 100,
-                  'motor_rated_speed': 1800,
-                  'motor_rated_voltage': 230, 'motor_power_factor': 85, 'ramp_mode': 1, 'dynamicVtoF': 1,
-                  'voltage_mode_select': 2,
-                  'low_freq_voltage_boost': 10}
+    # config = {'min_speed': 0, 'max_speed': 600, 'acc_rate': 50, 'dec_rate': 100,
+    #               'motor_rated_speed': 1800,
+    #               'motor_rated_voltage': 230, 'motor_power_factor': 85, 'ramp_mode': 1, 'dynamicVtoF': 1,
+    #               'voltage_mode_select': 2,
+    #               'low_freq_voltage_boost': 10}
 
     def get_order_number(self):
         return self.order_number
@@ -108,67 +108,67 @@ class SKDrv(ModbusTcpClient):
 
         #check parm1
         parm1 = self.read_parm('00.01')
-        min_speed = self['min_speed']
+        min_speed = self.min_speed
         if parm1 != min_speed:
             parm_change.append('00.01:min_speed')
 
         # check parm2
         parm2 = self.read_parm("00.02")
-        max_speed = self['max_speed']
+        max_speed = self.max_speed
         if parm2 != max_speed:
             parm_change.append('00.02:max_speed')
 
         #check parm3
         parm3 = self.read_parm("00.03")
-        acc_rate = self['acc_rate']
+        acc_rate = self.acc_rate
         if parm3 != acc_rate:
             parm_change.append('00.03:acc_rate')
 
         #check parm4
         parm4 = self.read_parm("00.04")
-        dec_rate = self['dec_rate']
+        dec_rate = self.dec_rate
         if parm4 != dec_rate:
             parm_change.append('00.04:dec_rate')
 
         #check parm7
         parm7 = self.read_parm("00.07")
-        motor_rated_speed = self['motor_rated_speed']
+        motor_rated_speed = self.motor_rated_speed
         if parm7 != motor_rated_speed:
             parm_change.append('00.07:motor_rated_speed')
 
         #check parm8
         parm8 = self.read_parm("00.08")
-        motor_rated_voltage = self['motor_rated_voltage']
+        motor_rated_voltage = self.motor_rated_voltage
         if parm8 != motor_rated_voltage:
             parm_change.append('00.08:motor_rated_voltage')
 
         #check parm9
         parm9 = self.read_parm("00.09")
-        motor_power_factor = self['motor_power_factor']
+        motor_power_factor = self.motor_power_factor
         if parm9 != motor_power_factor:
             parm_change.append('00.09:motor_power_factor')
 
         #check parm30
         parm30 = self.read_parm("00.30")
-        ramp_mode = self['ramp_mode']
+        ramp_mode = self.ramp_mode
         if parm30 != ramp_mode:
             parm_change.append('00.30:ramp_mode')
 
         #check parm32
         parm32 = self.read_parm("00.32")
-        dynamicVtoF = self['dynamicVtoF']
+        dynamicVtoF = self.dynamicVtoF
         if parm32 != dynamicVtoF:
             parm_change.append('00.32:dynamicVtoF')
 
         #check parm41
         parm41 = self.read_parm("00.41")
-        voltage_mode_select = self['voltage_mode_select']
+        voltage_mode_select = self.voltage_mode_select
         if parm41 != voltage_mode_select:
             parm_change.append('00.41:voltage_mode_select')
 
         #check parm42
         parm42 = self.read_parm("00.42")
-        low_freq_voltage_boost = self['low_freq_voltage_boost']
+        low_freq_voltage_boost = self.low_freq_voltage_boost
         if parm42 != low_freq_voltage_boost:
             parm_change.append('00.42:low_freq_voltage_boost')
 
@@ -292,8 +292,8 @@ class SKDrv(ModbusTcpClient):
     def getConfigPars(self):
         return self.__config__.keys()
 
-    def __getattr__(self, item):
-        return self.__config__[item]
-
-    def __setattr__(self, key, value):
-        self.__config__[key] = value
+    # def __getattr__(self, item):
+    #     return self.__config__[item]
+    #
+    # def __setattr__(self, key, value):
+    #     self.__config__[key] = value

@@ -1,6 +1,8 @@
 # This is an example of an simple instrument.
 
-from chimera.core.chimeraobject import ChimeraObject
+from chimera.instruments.fan import FanBase
+
+from chimera.interfaces.fan import (FanControllabeSpeed, FanControllabeDirection)
 from chimera.util.enum import Enum
 
 from skdrv.skdrv import SKDrv
@@ -8,7 +10,7 @@ from skdrv.skdrv import SKDrv
 FanDirection = Enum("FORWARD", "REVERSE")
 
 
-class CSKFan(ChimeraObject):
+class CSKFan(FanBase,FanControllabeSpeed,FanControllabeDirection):
     __config__ = {'sk_host': '127.0.0.1',
                   'min_speed': 0,
                   'max_speed': 600,
@@ -23,7 +25,8 @@ class CSKFan(ChimeraObject):
                   'low_freq_voltage_boost': 10}
 
     def __init__(self):
-        ChimeraObject.__init__(self)
+
+        FanBase.__init__(self)
 
         self.direction = FanDirection.FORWARD
 
@@ -32,12 +35,18 @@ class CSKFan(ChimeraObject):
     def __start__(self):
 
         self.log.debug('Configuring fan...')
-        for par in self.sk.getConfigPars():
-            try:
-                self.sk[par] = self[par]
-            except Exception, e:
-                self.log.warning("Could not update controller parameter: %s"%(par))
-                self.log.exception(e)
+
+        self.sk.min_speed = self['min_speed']
+        self.sk.max_speed = self['min_speed']
+        self.sk.acc_rate = self['min_speed']
+        self.sk.dec_rate = self['min_speed']
+        self.sk.motor_rated_speed = self['min_speed']
+        self.sk.motor_rated_voltage = self['motor_rated_voltage']
+        self.sk.motor_power_factor = self['motor_power_factor']
+        self.sk.ramp_mode = self['ramp_mode']
+        self.sk.dynamicVtoF = self['dynamicVtoF']
+        self.sk.voltage_mode_select = self['voltage_mode_select']
+        self.sk.low_freq_voltage_boost = self['low_freq_voltage_boost']
 
         self.log.debug('Connecting to Commander SK @ %s...'%self["sk_host"])
         self.sk.host = self["sk_host"]
@@ -80,3 +89,8 @@ class CSKFan(ChimeraObject):
     def stopFan(self):
         return self.sk.stop()
 
+    def isFanRunning(self):
+        raise NotImplementedError("ToDo")
+
+    def status(self):
+        raise NotImplementedError("ToDo")
