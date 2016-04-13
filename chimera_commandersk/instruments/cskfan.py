@@ -1,16 +1,11 @@
 # This is an example of an simple instrument.
 
 from chimera.instruments.fan import FanBase
-
-from chimera.interfaces.fan import (FanControllabeSpeed, FanControllabeDirection)
-from chimera.util.enum import Enum
-
+from chimera.interfaces.fan import FanControllabeSpeed, FanControllabeDirection, FanDirection
 from skdrv.skdrv import SKDrv
 
-FanDirection = Enum("FORWARD", "REVERSE")
 
-
-class CSKFan(FanBase,FanControllabeSpeed,FanControllabeDirection):
+class CSKFan(FanBase, FanControllabeSpeed, FanControllabeDirection):
     __config__ = {'sk_host': '127.0.0.1',
                   'min_speed': 0,
                   'max_speed': 600,
@@ -48,7 +43,7 @@ class CSKFan(FanBase,FanControllabeSpeed,FanControllabeDirection):
         self.sk.voltage_mode_select = self['voltage_mode_select']
         self.sk.low_freq_voltage_boost = self['low_freq_voltage_boost']
 
-        self.log.debug('Connecting to Commander SK @ %s...'%self["sk_host"])
+        self.log.debug('Connecting to Commander SK @ %s...' % self["sk_host"])
         self.sk.host = self["sk_host"]
         self.sk.connect()
         self.sk.check_basic()
@@ -59,38 +54,38 @@ class CSKFan(FanBase,FanControllabeSpeed,FanControllabeDirection):
     def getRotation(self):
         return self.sk.check_rotation()
 
-    def setRotation(self,freq):
+    def setRotation(self, freq):
         """
         Set the rotation frequency in Hz.
 
         @param freq: Frequency in Hz
         @type  freq: float
         """
-        self.sk.write_parm('01.21',int(freq))
+        self.sk.write_parm('01.21', int(freq))
 
     def getDirection(self):
         return self.direction
 
-    def setDirection(self,direction):
+    def setDirection(self, direction):
         if direction in FanDirection:
             self.direction = direction
         else:
-            self.log.warning("Value %s not a valid fan direction. Should be one of %s. Leaving unchanged."%(direction,
-                                                                                    ['%s'%d for d in FanDirection]))
+            self.log.warning("Value %s not a valid fan direction. Should be one of %s. Leaving unchanged." % (direction,
+                                                                                                              ['%s' % d
+                                                                                                               for d in
+                                                                                                               FanDirection]))
 
-    def startFan(self):
+    def switchOn(self):
         if self.direction == FanDirection.FORWARD:
             return self.sk.forward()
         elif self.direction == FanDirection.REVERSE:
             return self.sk.reverse()
         else:
-            raise IOError("Unrecognized fan direction (%s)."%self.direction)
+            raise IOError("Unrecognized fan direction (%s)." % self.direction)
 
-    def stopFan(self):
+    def switchOff(self):
         return self.sk.stop()
 
-    def isFanRunning(self):
-        raise NotImplementedError("ToDo")
-
-    def status(self):
-        raise NotImplementedError("ToDo")
+    # TODO: def isFanRunning(self):
+    #
+    # TODO: def status(self):
