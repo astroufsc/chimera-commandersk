@@ -46,9 +46,9 @@ class SKDrv(ModbusTcpClient):
     max_speed = 600  #Hz parm2
     acc_rate = 50.  #s/100Hz parm3
     dec_rate = 100.  #s/100 Hz parm4
-    motor_rated_speed = 1800  #rpm parm7 -attention: the ctsoft original parm is 1800 rpm
+    motor_rated_speed = 1625  #rpm parm7 -attention: the ctsoft original parm is 1800 rpm
     motor_rated_voltage = 230  #V parm 8
-    motor_power_factor = 85  # parm 9 it can be changed for the motor's nameplate value if it is known
+    motor_power_factor = 82  # parm 9 it can be changed for the motor's nameplate value if it is known
     #It is the motor cos() and 0.5<motor_power_factor<0.97.
     ramp_mode = 1  #  parm 30 Standard Std (2) without dynamic braking resistor, If with this resistor, should set to 0 or
     # Fast
@@ -201,7 +201,7 @@ class SKDrv(ModbusTcpClient):
         reads the motor rotation in rpm
         """
 
-        rotation = self.read_parm('05.04')  # motor speed in rpm
+        rotation = self.read_parm('05.01')  # motor speed in Hz
         return rotation
 
 
